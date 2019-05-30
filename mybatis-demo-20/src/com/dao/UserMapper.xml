@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.UserMapper">
+
+	<resultMap type="User" id="userMap">
+		<id property="id" column="u_id"/>
+		<result property="userName" column="u_userName"/>
+		<result property="password" column="u_password"/>
+		<result property="gender" column="u_gender"/>
+		<result property="birthday" column="u_birthday"/>
+		<result property="registeTime" column="u_registeTime"/>
+		
+		<collection property="messages" column="u_id" select="selectMessageByUserId"></collection>
+	</resultMap>
+	
+	<resultMap type="Message" id="messageMap">
+		<id property="id" column="m_id"/>
+		<result property="content" column="m_content"/>
+		<result property="userId" column="m_userId"/>
+		<result property="time" column="m_time"/>
+	</resultMap>
+	
+	<select id="selectMessageByUserId" resultMap="messageMap">
+		select * from t_message
+		where m_userId = #{0}
+	</select>
+	
+	<insert id="insert" parameterType="User">
+		insert into t_user(u_userName, u_password, u_gender, u_birthday, u_registeTime)
+		values(#{userName}, #{password}, #{gender}, #{birthday}, #{registeTime})
+	</insert>
+
+	<delete id="delete" parameterType="User">
+		delete from t_user
+		where u_id = #{id}
+	</delete>
+	
+	<update id="update" parameterType="User">
+		update t_user
+		<set>
+			<if test="userName != null">u_userName = #{userName},</if>
+			<if test="password != null">u_password = #{password},</if>
+			<if test="gender != null">u_gender = #{gender},</if>
+			<if test="birthday != null">u_birthday = #{birthday},</if>
+		</set>
+		where u_id = #{id}
+	</update>
+	
+	<select id="select" parameterType="User" resultMap="userMap">
+		select * from t_user
+		<where>
+			<if test="id != null">and u_id = #{id}</if>
+			<if test="userName != null">and u_userName = #{userName}</if>
+			<if test="password != null">and u_password = #{password}</if>
+			<if test="gender != null">and u_gender = #{gender}</if>
+			<if test="birthday != null">and u_birthday = #{birthday}</if>
+			<if test="registeTime != null">and u_registeTime = #{registeTime}</if>
+		</where>
+	</select>
+	
+	<select id="count" parameterType="map" resultType="int">
+		select count(u_id) from t_user
+		<where>
+			<!-- 使用map集合的键名进行数据判断和取值操作 -->
+			<if test="keyword != null">
+				(u_id like concat('%',#{keyword},'%')
+				or u_userName like concat('%',#{keyword},'%'))
+			</if>
+			<if test="gender != null">and u_gender = #{gender}</if>
+			<if test="birthday != null">and u_birthday &lt;= #{birthday}</if>
+			<if test="registeTime != null">and u_registeTime &lt;= #{registeTime}</if>
+		</where>
+	</select>
+	
+	<select id="selectByPage" parameterType="map"  resultMap="userMap">
+		select * from t_user
+		<where>
+			<if test="keyword != null">
+				(u_id like concat('%',#{keyword},'%')
+				or u_userName like concat('%',#{keyword},'%'))
+			</if>
+			<if test="gender != null">and u_gender = #{gender}</if>
+			<if test="birthday != null">and u_birthday &lt;= #{birthday}</if>
+			<if test="registeTime != null">and u_registeTime &lt;= #{registeTime}</if>
+		</where>
+		
+		<choose>
+			<when test="order != null">order by ${order}</when>
+			<otherwise>order by u_id</otherwise>
+		</choose>
+		
+		<if test="start != null &amp; size != null">
+		limit #{start}, #{size}
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

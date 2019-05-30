@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.MessageMapper">
+
+	<!-- association
+		用于子表查询主表 多个发言对应同一个用户  多对一
+		1. Message实体类设置 User user属性
+		2. 结果集映射 messageMap,userMap
+		3. selectMessageByUserId select标签
+	  -->
+	<resultMap type="Message" id="messageMap">
+		<id  property="id" column="m_id"/>
+		<result property="content" column="m_content" />
+		<result property="userId" column="m_userId" />
+		<result property="time" column="m_time" />
+		
+		<association property="user" column="m_userId" select="selectByUserId"> </association>
+	
+	</resultMap>
+	
+	<resultMap type="User" id="userMap">
+		<id  property="id" column="u_id"/>
+		<result property="userName" column="u_userName" />
+		<result property="password" column="u_password" />
+		<result property="gender" column="u_gender" />
+		<result property="birthday" column="u_birthday" />
+		<result property="registeTime" column="u_registeTime" />
+	</resultMap>
+	
+	<select id="selectByUserId" resultMap="userMap">
+		select * from t_user
+		where u_id = #{0}
+	</select>
+	
+	<select id="select2" resultMap="messageMap">
+		select * from t_message
+		<where>
+			<if test="id != null">m_id = #{id}</if>
+			<if test="content != null">m_content = #{content}</if>
+			<if test="userId != null">m_userId = #{userId}</if>
+			<if test="time != null">m_time = #{time}</if>
+		</where>
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

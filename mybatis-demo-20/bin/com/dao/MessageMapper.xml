@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.MessageMapper">
+
+	<resultMap type="Message" id="messageMap">
+		<id property="id" column="m_id"/>
+		<result property="content" column="m_content"/>
+		<result property="userId" column="m_userId"/>
+		<result property="time" column="m_time"/>
+		
+		<!-- 方式2 -->
+		<association property="user" column="m_userId" select="selectByUserId"></association>
+		
+		<!-- 方式1 -->
+		<!-- <result property="userName" column="u_userName"/> -->
+	</resultMap>
+	
+	<resultMap type="User" id="userMap">
+		<id property="id" column="u_id"/>
+		<result property="userName" column="u_userName"/>
+		<result property="password" column="u_password"/>
+		<result property="gender" column="u_gender"/>
+		<result property="birthday" column="u_birthday"/>
+		<result property="registeTime" column="u_registeTime"/>
+	</resultMap>
+	
+	<select id="selectByUserId" resultMap="userMap">
+		select * from t_user
+		where u_id = #{0}
+	</select>
+	
+	<insert id="insert" parameterType="Message">
+		insert into t_message(m_content, m_userId, m_time)
+		values(#{content}, #{userId}, #{time})
+	</insert>
+
+	<delete id="delete" parameterType="Message">
+		delete from t_Message
+		where m_id = #{id}
+	</delete>
+	
+	<update id="update" parameterType="Message">
+		update t_Message
+		<set>
+			<if test="content != null">m_content = #{content},</if>
+			<if test="time != null">m_time = #{time},</if>
+		</set>
+		where m_id = #{id}
+	</update>
+	
+	<!-- 方式2 -->
+	<select id="select" parameterType="Message" resultMap="messageMap">
+		select * from t_Message 
+		<where>
+			<if test="id != null">and m_id = #{id}</if>
+			<if test="userId != null">and m_u d = #{userId}</if>
+			<if test="time != null">and m_time = #{time}</if>
+		</where>
+	</select>
+	
+	<!-- 方式1 -->
+	<!-- <select id="select" parameterType="Message" resultMap="messageMap">
+		select m.*, u.u_userName 
+		from t_Message m
+		inner join t_user u
+		on m.m_userId = u.u_id
+		<where>
+			<if test="id != null">and m.m_id = #{id}</if>
+			<if test="userId != null">and m.m_userId = #{userId}</if>
+			<if test="time != null">and m.m_time = #{time}</if>
+		</where>
+	</select> -->
+	
+	<select id="count" parameterType="map" resultType="int">
+		select count(m_id) from t_Message
+		<where>
+			<if test="keyword != null">
+				m_content like concat('%',#{keyword},'%')
+			</if>
+			<if test="userId != null">and m_userId = #{userId}</if>
+		</where>
+	</select>
+	
+	<select id="selectByPage" parameterType="map"  resultMap="messageMap">
+		select * from t_Message
+		<where>
+			<if test="keyword != null">
+				m_content like concat('%',#{keyword},'%')
+			</if>
+			<if test="userId != null">and m_userId = #{userId}</if>
+		</where>
+		
+		<choose>
+			<when test="order != null">order by ${order}</when>
+			<otherwise>order by m_id</otherwise>
+		</choose>
+		
+		<if test="start != null &amp; size != null">
+		limit #{start}, #{size}
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
