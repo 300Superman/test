@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="com.bean">
+	<class name="User" table="t_user">
+		<id name="id" column="u_id">
+			<generator class="sequence">
+				<param name="sequence">sq_user</param>
+			</generator>
+		</id>
+		<property name="userName" column="u_userName"></property>
+		<property name="password" column="u_password"></property>
+		<property name="gender" column="u_gender"></property>
+		<property name="birthday" column="u_birthday"></property>
+		<property name="registeTime" column="u_registeTime"></property>
+		
+		<!-- 一对多 -->
+		<set name="messages" order-by="m_id desc"><!-- lazy="false" -->
+			<key column="m_userId"></key>
+			<one-to-many class="Message"/>
+		</set>
+	</class>
+</hibernate-mapping>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="com.bean">
+	<class name="StudentAndCourse" table="t_studentAndCourse">
+		<id name="id" column="sc_id">
+			<generator class="sequence">
+				<param name="sequence">sq_studentAndCourse</param>
+			</generator>
+		</id>
+		<property name="studentId" column="sc_studentId"></property>
+		<property name="courseId" column="sc_courseId"></property>
+	</class>
+</hibernate-mapping>

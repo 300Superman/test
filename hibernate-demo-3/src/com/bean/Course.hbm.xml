@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="com.bean">
+	<class name="Course" table="t_Course">
+		<id name="id" column="c_id">
+			<generator class="sequence">
+				<param name="sequence">sq_Course</param>
+			</generator>
+		</id>
+		<property name="name" column="c_name"></property>
+		
+		<set name="students" table="t_studentAndCourse" order-by="sc_studentId"
+			lazy="false" inverse="true">
+			<key column="sc_courseId"></key>
+			<many-to-many class="Student" column="sc_studentId"></many-to-many>
+		</set>
+	</class>
+</hibernate-mapping>

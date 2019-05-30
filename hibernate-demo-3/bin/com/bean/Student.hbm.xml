@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="com.bean">
+	<class name="Student" table="t_Student">
+		<id name="id" column="s_id">
+			<generator class="sequence">
+				<param name="sequence">sq_Student</param>
+			</generator>
+		</id>
+		<property name="name" column="s_name"></property>
+		
+		<!-- 多对多 -->
+		<set name="courses" table="t_studentAndCourse" lazy="false" 
+			order-by="sc_courseId desc" cascade="all">
+			<key column="sc_studentId"></key>
+			<many-to-many column="sc_courseId" class="Course"></many-to-many>
+		</set>
+	</class>
+</hibernate-mapping>
